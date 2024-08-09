@@ -178,6 +178,11 @@ export default function Home() {
                       p: 2,
                       maxWidth: '75%',
                       boxShadow: 1,
+                      '& .markdown-body': {
+                        backgroundColor: 'transparent',
+                        margin: 0,
+                        padding: 0,
+                      },
                     }}
                   >
                     <ReactMarkdown
