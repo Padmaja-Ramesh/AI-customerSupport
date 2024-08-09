@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
 
 const systemPrompt = `
 You are a customer support chatbot for 22 Street Coffee Shop. Your primary task is to help customers place orders, generate a pickup token for them, and guide them to pick up their order from the counter where they will make the payment. You should also assist customers with inquiries about their orders or other related questions. 
