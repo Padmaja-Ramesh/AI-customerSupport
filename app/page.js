@@ -1,12 +1,27 @@
+'use client';
 
-'use client'
-import { Box, Button, Stack, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Stack,
+  TextField,
+  Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Rating,
+  TextareaAutosize,
+  Snackbar,
+} from '@mui/material';
 import { useState, useEffect, useRef } from 'react';
 import { auth, googleProvider } from '../utils/firebase';
 import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import 'github-markdown-css';
+import FeedbackIcon from '@mui/icons-material/Feedback';
 
 export default function Home() {
   const [messages, setMessages] = useState([
@@ -16,6 +31,10 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
   const [orders, setOrders] = useState([]);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [feedback, setFeedback] = useState('');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const messagesEndRef = useRef(null);
 
   // Authenticate with Google
@@ -107,6 +126,39 @@ export default function Home() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const handleFeedbackOpen = () => {
+    setFeedbackOpen(true);
+  };
+
+  const handleFeedbackClose = () => {
+    setFeedbackOpen(false);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  const handleFeedbackSubmit = async () => {
+    if (rating === 0) return; // Don't submit feedback if no rating is given
+
+    try {
+      // Here you would normally send the feedback to your server
+      console.log('Feedback Submitted:', { rating, feedback });
+
+      // Close the feedback dialog
+      setFeedbackOpen(false);
+
+      // Show thank you message
+      setSnackbarOpen(true);
+
+      // Reset feedback form
+      setRating(0);
+      setFeedback('');
+    } catch (error) {
+      console.error('Error submitting feedback:', error);
+    }
+  };
 
   return (
     <Box
@@ -296,20 +348,33 @@ export default function Home() {
               </Stack>
             )}
           </Stack>
-          <Button
-            variant="outlined"
-            onClick={handleLogout}
-            sx={{
-              mt: 2,
-              bgcolor: '#f44336',
-              color: 'white',
-              '&:hover': {
-                bgcolor: '#c62828',
-              },
-            }}
-          >
-            Logout
-          </Button>
+          <Stack direction={'row'} spacing={2} mt={2} justifyContent="center">
+            <Button
+              variant="outlined"
+              onClick={handleLogout}
+              sx={{
+                bgcolor: '#f44336',
+                color: 'white',
+                '&:hover': {
+                  bgcolor: '#c62828',
+                },
+              }}
+            >
+              Logout
+            </Button>
+            <IconButton
+              aria-label="feedback"
+              onClick={handleFeedbackOpen}
+              sx={{
+                color: '#00796b',
+                '&:hover': {
+                  bgcolor: '#e0f2f1',
+                },
+              }}
+            >
+              <FeedbackIcon />
+            </IconButton>
+          </Stack>
         </>
       ) : (
         <Button
@@ -326,6 +391,45 @@ export default function Home() {
           Login with Google
         </Button>
       )}
+
+      {/* Feedback Dialog */}
+      <Dialog open={feedbackOpen} onClose={handleFeedbackClose}>
+        <DialogTitle>Rate Your Experience</DialogTitle>
+        <DialogContent>
+          <Stack direction="column" spacing={2}>
+            <Rating
+              name="feedback-rating"
+              value={rating}
+              onChange={(event, newValue) => {
+                setRating(newValue);
+              }}
+            />
+            <TextareaAutosize
+              minRows={3}
+              placeholder="Leave a comment (optional)"
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value)}
+              style={{ width: '100%' }}
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleFeedbackClose} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleFeedbackSubmit} color="primary" disabled={rating === 0}>
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Thank You Snackbar */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        message="Thank you for your feedback!"
+      />
     </Box>
   );
 }

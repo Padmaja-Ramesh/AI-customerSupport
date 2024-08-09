@@ -11,7 +11,10 @@
   "dependencies": {
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
+    "@google-cloud/translate": "^8.3.0",
     "@google/generative-ai": "^0.16.0",
+    "@mui/icons-material": "^5.16.6",
+    "@mui/lab": "^5.0.0-alpha.173",
     "@mui/material": "^5.16.6",
     "firebase": "^10.12.5",
     "github-markdown-css": "^5.6.1",
