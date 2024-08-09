@@ -70,7 +70,3 @@ export async function POST(req) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
-
-export async function GET() {
-    return NextResponse.json({ message: 'Hello from chat API!' });
-}
