@@ -42,7 +42,6 @@ export async function POST(req) {
             },
         });
 
-        // Let the Gemini API generate a response based on the conversation history
         let responseText;
         try {
             const result = await chat.sendMessage(formattedMessages[formattedMessages.length - 1].parts[0].text);

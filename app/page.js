@@ -143,8 +143,14 @@ export default function Home() {
     if (rating === 0) return; // Don't submit feedback if no rating is given
 
     try {
-      // Here you would normally send the feedback to your server
-      console.log('Feedback Submitted:', { rating, feedback });
+      // Send feedback to your server or API endpoint
+      await fetch('/api/feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ rating, feedback }),
+      });
 
       // Close the feedback dialog
       setFeedbackOpen(false);
